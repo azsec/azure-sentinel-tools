@@ -11,7 +11,9 @@
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
     .EXAMPLE
-        Get-AzureAppServiceInfo.ps1 -FileName AzureAppAudit -Path C:\Audit
+        .\Connect-AzureSecurityCenter.ps1 -WorkspaceRg azsec-corporate-rg `
+                                          -WorkspaceName azsec-shared-workspace `
+                                          -SubscriptionList .\subscription.txt
 #>
 
 Param(
@@ -37,10 +39,9 @@ Param(
     $SubscriptionList
 )
 
-$date = Get-Date -UFormat "%Y_%m_%d_%H%M%S"
 
 $workspaceId = (Get-AzOperationalInsightsWorkspace -Name $WorkspaceName `
-        -ResourceGroupName $WorkspaceRg).ResourceId
+                                                   -ResourceGroupName $WorkspaceRg).ResourceId
 if (!$workspaceId) {
     Write-Host -ForegroundColor Red "[!] Workspace cannot be found. Please try again"
 }
@@ -51,7 +52,7 @@ else {
 function Get-SubscriptionList {
     Param(
         [Parameter(Mandatory = $true)]
-        [ValidateNotNullOrEmpty]
+        [ValidateNotNullOrEmpty()]
         [string]
         $SubscriptionList
     )
@@ -67,7 +68,7 @@ function Get-AzureAccessToken {
     $token = $profileClient.AcquireAccessToken($context.Subscription.TenantId)
     $authHeader = @{
         'Content-Type'  = 'application/json'
-        'Authorization' = 'Bearer' + $token.AccessToken
+        'Authorization' = 'Bearer ' + $token.AccessToken
     }
 
     return $authHeader
@@ -76,7 +77,7 @@ function Get-AzureAccessToken {
 function Test-AzureSecurityCenterTier {
     Param(
         [Parameter(Mandatory = $true)]
-        #[ValidateNotNullOrEmpty]
+        [ValidateNotNullOrEmpty()]
         [string]
         $SubscriptionId
     )
@@ -92,14 +93,45 @@ function Test-AzureSecurityCenterTier {
     }
 }
 
-function Enable-Asc {
-    $subscriptionIds = Get-Content -Path $SubscriptionList
-    foreach ($subscriptionId in $subscriptionIds) {
-        $status = Test-AzureSecurityCenterTier -SubscriptionId $subscriptionId
-        if ($status -eq $true) {
-            Write-Host -ForegroundColor Green "[-] Connecting ASC to Azure Sentinel is going to be started"
+function New-ConnectorConfiguration {
+
+    Param(
+        [Parameter(Mandatory = $true)]
+        [ValidateNotNullOrEmpty()]
+        [string]
+        $SubscriptionId
+    )
+        $connnectorCfg = [PSCustomObject]@{
+            name = $SubscriptionId
+            etag = (New-Guid).Guid
+            kind = "AzureSecurityCenter"
+            properties = @{
+                SubscriptionId = $SubscriptionId
+                dataTypes = @{
+                    alerts = @{
+                        state = "Enabled"
+                    }
+                }
+            }
+        }
+    return $connnectorCfg
+}
+
+$subscriptionsIds = Get-SubscriptionList -SubscriptionList $SubscriptionList
+foreach ($subscriptionId in $subscriptionsIds) {
+    $status = Test-AzureSecurityCenterTier -SubscriptionId $subscriptionId
+    $authHeader = Get-AzureAccessToken
+    $connectorName = $subscriptionId
+    if ($status -eq $true) {
+        Write-Host -ForegroundColor Green "[-] Connecting ASC to Azure Sentinel is going to be started"
+        $requestBody = New-ConnectorConfiguration -SubscriptionId $subscriptionId | ConvertTo-Json -Depth 4
+        $uri = "https://management.azure.com" + $workspaceId + "/providers/Microsoft.SecurityInsights/dataConnectors/" + $connectorName + "?api-version=2019-01-01-preview"
+        $response = Invoke-WebRequest -Uri $uri -Method Put -Headers $authHeader -Body $requestBody
+        if ($response.StatusCode -eq "200") {
+            Write-Host -ForegroundColor Yellow "[-] Succesfully connected ASC in subscription: $subscriptionId to Azure Sentinel"
+        }
+        else {
+            Write-Host -ForegroundColor Red "[!] Failed to connect to Azure Sentinel"
         }
     }
 }
-
-Enable-Asc
