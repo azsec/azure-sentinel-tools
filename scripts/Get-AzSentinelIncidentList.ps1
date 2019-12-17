@@ -6,15 +6,15 @@
     .NOTES
         This script is written with Azure PowerShell (Az) module.
 
-        File Name     : Get-AzureSentinelIncidentList.ps1
+        File Name     : Get-AzSentinelIncidentList.ps1
         Version       : 1.0.0.0
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
     .EXAMPLE
-        .\Get-AzureSentinelIncidentList.ps1 -WorkspaceRg azsec-corporate-rg `
-                                            -WorkspaceName azsec-shared-workspace `
-                                            -FileName 'AzSentinelIncident' `
-                                            -Path 'C:\Audit' 
+        .\Get-AzSentinelIncidentList.ps1 -WorkspaceRg azsec-corporate-rg `
+                                         -WorkspaceName azsec-shared-workspace `
+                                         -FileName 'AzSentinelIncident' `
+                                         -Path 'C:\Audit' 
 #>
 
 Param(
