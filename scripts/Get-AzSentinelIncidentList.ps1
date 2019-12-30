@@ -2,7 +2,18 @@
     .SYNOPSIS
         This script is used to extract all Azure Sentinel incidents. 
     .DESCRIPTION
-        The script is used to extract all Azure Sentinel incidents.
+        The script is used to extract all Azure Sentinel incidents.The script extracts the following info:
+            - Incident ID: this is very important because it shall be used when you need to get specific incident. Name can be similar but this ID is unique.
+            - Title: name of that incident
+            - Incident number: it is incremental number when an incident is created.
+            - Incident severity: severity of an incident (Low, Medium, High, Critical)
+            - Status: status of an incident (New, In Progress, Closed)
+            - Incident label: it is like a tag.
+            - Close Reason: a close status (False Positive, True Positive)
+            - Owner: name of the person who is assigned to work on an incident
+            - Owner email: email of the assignee. This field is retrieved from AAD user profile.
+            - Time Generated: alert time generated, incident time generated…
+            - Total comment: it is the total number of comments in each incident.
     .NOTES
         This script is written with Azure PowerShell (Az) module.
 
