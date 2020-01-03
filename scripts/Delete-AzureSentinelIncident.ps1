@@ -1,8 +1,8 @@
 <#
     .SYNOPSIS
-        This script is used to delete a specific incident
+        This script is used to delete a specific incident generated from ASC
     .DESCRIPTION
-        This script is used to delete a specific incident.
+        This script is used to delete a specific incident generated from ASC.
         This is for testing purpose. You shouldn't delete a security incident in a production environment. 
         You can mark an incident as a False Positive case.
     .NOTES
