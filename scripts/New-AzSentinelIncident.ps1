@@ -34,7 +34,7 @@ Sample request body
         "closeReson": "",
         "status": "New",
         "caseNumber": 1331000000,
-        "label": [
+        "labels": [
             "sample-incident",
             "test"
         ],
