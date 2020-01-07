@@ -10,6 +10,7 @@
         Version       : 1.0.0.0
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
+        Reference     : https://azsec.azurewebsites.net/2020/01/06/create-a-fully-customized-azure-sentinel-incident/
     .EXAMPLE
         .\New-AzSentinelIncident.ps1 -WorkspaceRg azsec-corporate-rg `
                                      -WorkspaceName azsec-shared-workspace `
