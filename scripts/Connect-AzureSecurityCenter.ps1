@@ -10,6 +10,7 @@
         Version       : 1.0.0.0
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
+        Reference     : https://azsec.azurewebsites.net/2019/12/14/connect-azure-security-center-to-azure-sentinel-programatically/
     .EXAMPLE
         .\Connect-AzureSecurityCenter.ps1 -WorkspaceRg azsec-corporate-rg `
                                           -WorkspaceName azsec-shared-workspace `
