@@ -21,6 +21,7 @@
         Version       : 1.0.0.0
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
+        Reference     : https://azsec.azurewebsites.net/2019/12/16/extract-all-azure-sentinel-incidents/
     .EXAMPLE
         .\Get-AzSentinelIncidentList.ps1 -WorkspaceRg azsec-corporate-rg `
                                          -WorkspaceName azsec-shared-workspace `
