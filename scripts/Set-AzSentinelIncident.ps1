@@ -11,7 +11,7 @@
         Version       : 1.0.0.0
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
-        Reference     : https://azsec.azurewebsites.net/2020/01/03/delete-an-azure-sentinel-incident/
+        Reference     : https://azsec.azurewebsites.net/2020/01/21/update-azure-sentinel-incident-programatically/
     .EXAMPLE
         .\Set-AzureSentinelIncident.ps1  -WorkspaceRg azsec-corporate-rg `
                                          -WorkspaceName azsec-shared-workspace `
