@@ -23,43 +23,43 @@
 
 Param(
     [Parameter(Mandatory = $true,
-        HelpMessage = "Resource group name of the Log Analytics workspace Azure Sentinel connects to",
-        Position = 0)]
+               HelpMessage = "Resource group name of the Log Analytics workspace Azure Sentinel connects to",
+               Position = 0)]
     [ValidateNotNullOrEmpty()]
     [string]
     $WorkspaceRg,
 
     [Parameter(Mandatory = $true,
-        HelpMessage = "Name of the Log Analytics workspace Azure Sentinel connects to",
-        Position = 1)]
+               HelpMessage = "Name of the Log Analytics workspace Azure Sentinel connects to",
+               Position = 1)]
     [ValidateNotNullOrEmpty()]
     [string]
     $WorkspaceName,
 
     [Parameter(Mandatory = $true,
-        HelpMessage = "ID of the incident",
-        Position = 2)]
+               HelpMessage = "ID of the incident",
+               Position = 2)]
     [ValidateNotNullOrEmpty()]
     [string]
     $IncidentId,
 
     [Parameter(Mandatory = $true,
-        HelpMessage = "User Principal name of assignee e.g linda.chung@azsec.net",
-        Position = 3)]
+               HelpMessage = "User Principal name of assignee e.g linda.chung@azsec.net",
+               Position = 3)]
     [ValidateNotNullOrEmpty()]
     [string]
     $Assignee,
 
     [Parameter(Mandatory = $true,
-        HelpMessage = "User Principal name of assignee e.g linda.chung@azsec.net",
-        Position = 3)]
+               HelpMessage = "User Principal name of assignee e.g linda.chung@azsec.net",
+               Position = 3)]
     [ValidateNotNullOrEmpty()]
     [string[]]
     $Label,
 
     [Parameter(Mandatory = $true,
-        HelpMessage = "User Principal name of assignee e.g linda.chung@azsec.net",
-        Position = 3)]
+              HelpMessage = "User Principal name of assignee e.g linda.chung@azsec.net",
+              Position = 3)]
     [ValidateSet("Informational", "Critical", "High", "Medium", "Low")]
     [string]
     $Severity
@@ -67,7 +67,7 @@ Param(
 )
 
 $workspaceId = (Get-AzOperationalInsightsWorkspace -Name $WorkspaceName `
-        -ResourceGroupName $WorkspaceRg).ResourceId
+                                                   -ResourceGroupName $WorkspaceRg).ResourceId
 if (!$workspaceId) {
     Write-Host -ForegroundColor Red "[!] Workspace cannot be found. Please try again"
 }
@@ -90,8 +90,14 @@ function New-AuthHeader {
 
 
 $authHeader = New-AuthHeader
-$uri = "https://management.azure.com" + $workspaceId + "/providers/Microsoft.SecurityInsights/cases/" + $IncidentId + "/?api-version=2019-01-01-preview"
-$response = Invoke-RestMethod -Uri $uri -Method Get -Headers $authHeader
+$uri = "https://management.azure.com" + $workspaceId `
+                                      + "/providers/Microsoft.SecurityInsights/cases/" `
+                                      + $IncidentId `
+                                      + "/?api-version=2019-01-01-preview"
+
+$response = Invoke-RestMethod -Uri $uri `
+                             -Method Get `
+                             -Headers $authHeader
 $response | ConvertTo-Json
 $response.name = $IncidentId
 $response.properties.labels = $Label
