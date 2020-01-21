@@ -105,7 +105,6 @@ $updateUri = "https://management.azure.com" + $workspaceId `
                                             + "/providers/Microsoft.SecurityInsights/cases/" `
                                             + $IncidentId `
                                             + "?api-version=2019-01-01-preview"
-$reguestBody
 $r = Invoke-RestMethod -Uri $updateUri `
                        -Method PUT `
                        -Headers $authHeader `
