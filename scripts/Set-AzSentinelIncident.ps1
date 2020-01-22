@@ -51,14 +51,14 @@ Param(
     $Assignee,
 
     [Parameter(Mandatory = $true,
-               HelpMessage = "User Principal name of assignee e.g linda.chung@azsec.net",
+               HelpMessage = "Label/Tagging of an incident",
                Position = 3)]
     [ValidateNotNullOrEmpty()]
     [string[]]
     $Label,
 
     [Parameter(Mandatory = $true,
-              HelpMessage = "User Principal name of assignee e.g linda.chung@azsec.net",
+              HelpMessage = "Severity of an incident",
               Position = 3)]
     [ValidateSet("Informational", "Critical", "High", "Medium", "Low")]
     [string]
