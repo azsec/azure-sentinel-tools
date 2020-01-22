@@ -52,14 +52,14 @@ Param(
 
     [Parameter(Mandatory = $true,
                HelpMessage = "Label/Tagging of an incident",
-               Position = 3)]
+               Position = 4)]
     [ValidateNotNullOrEmpty()]
     [string[]]
     $Label,
 
     [Parameter(Mandatory = $true,
               HelpMessage = "Severity of an incident",
-              Position = 3)]
+              Position = 5)]
     [ValidateSet("Informational", "Critical", "High", "Medium", "Low")]
     [string]
     $Severity
