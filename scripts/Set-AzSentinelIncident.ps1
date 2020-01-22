@@ -100,8 +100,7 @@ $response = Invoke-RestMethod -Uri $uri `
                              -Headers $authHeader
 $response | ConvertTo-Json
 $response.name = $IncidentId
-$response.properties.labels = $Label
-    
+$response.properties.labels = $Label   
 $objectId = (Get-AzAdUser -UserPrincipalName $Assignee).Id
 $response.properties.owner.objectId = $objectId
 $response.properties.severity = $Severity
