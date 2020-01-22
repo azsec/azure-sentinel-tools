@@ -6,4 +6,5 @@
 | [Get-AzSentinelIncidentList.ps1](https://github.com/azsec/azure-sentinel-tools/blob/master/scripts/Get-AzSentinelIncidentList.ps1) | This script allows you to export all Azure Sentinel incidents into a friendly CSV report |
 | [Delete-AzSentinelIncident.ps1](https://github.com/azsec/azure-sentinel-tools/blob/master/scripts/Delete-AzureSentinelIncident.ps1) | This script allows you to delete an Azure Sentinel incident generated from ASC | 
 | [New-AzSentinelIncident.ps1](https://github.com/azsec/azure-sentinel-tools/blob/master/scripts/New-AzSentinelIncident.ps1) |This script allows you to create a fully-customized incident in Azure Sentinel |
-| [Set-AzSentinelIncident.ps1](https://github.com/azsec/azure-sentinel-tools/blob/master/scripts/Set-AzSentinelIncident.ps1) | This sript allows you to update an existing Azure Sentinel incident | 
+| [Set-AzSentinelIncident.ps1](https://github.com/azsec/azure-sentinel-tools/blob/master/scripts/Set-AzSentinelIncident.ps1) | This script allows you to update an existing Azure Sentinel incident | 
+| [Update-MultipleAzSentinelIncidents.ps1](https://github.com/azsec/azure-sentinel-tools/blob/master/scripts/Update-MultipleAzSentinelIncidents.ps1) | This script allows you to update multiple Azure Sentinel incidents once at a time |
