@@ -20,13 +20,13 @@ WORKSPACE_ID='XXXXXXXX-XXXX-XXXX-XXXX-XXXXXXXXXX
 def get_auth_header():
     context = adal.AuthenticationContext(AUTH_URI)
     code = context.acquire_user_code(
-        'https://vault.azure.net', CLIENT_ID)
+        'https://vault.azure.net', AZURE_CLI_CLIENT_ID)
     message = code['message']
     # You must print message
     print(message)
     token = context.acquire_token_with_device_code('https://vault.azure.net',
                                                    code,
-                                                   CLIENT_ID)
+                                                   AZURE_CLI_CLIENT_ID)
     authHeader = {
         'Authorization': 'Bearer ' + token['accessToken'],
         'Content-Type': 'application/json'
@@ -35,7 +35,7 @@ def get_auth_header():
  
  
 client_id_secret_uri = 'https://' + VAULT_NAME + '.vault.azure.net/secrets/' + \
-    JUPITER_CLIENTID_SECRET_NAME + '?api-version=7.0'
+    KV_SECRET_NAME + '?api-version=7.0'
  
 response = requests.get(client_id_secret_uri, headers=(get_auth_header()))
 jsonData = response.json()
