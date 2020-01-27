@@ -8,3 +8,4 @@
 | [New-AzSentinelIncident.ps1](https://github.com/azsec/azure-sentinel-tools/blob/master/scripts/New-AzSentinelIncident.ps1) |This script allows you to create a fully-customized incident in Azure Sentinel |
 | [Set-AzSentinelIncident.ps1](https://github.com/azsec/azure-sentinel-tools/blob/master/scripts/Set-AzSentinelIncident.ps1) | This script allows you to update an existing Azure Sentinel incident | 
 | [Update-MultipleAzSentinelIncidents.ps1](https://github.com/azsec/azure-sentinel-tools/blob/master/scripts/Update-MultipleAzSentinelIncidents.ps1) | This script allows you to update multiple Azure Sentinel incidents once at a time |
+| [Get-AzSentinelIncidentComments.ps1](https://github.com/azsec/azure-sentinel-tools/blob/master/scripts/Get-AzSentinelIncidentComments.ps1) | This script allows you to extract all comments in an Azure Sentinel incident |
