@@ -10,7 +10,7 @@
         Version       : 1.0.0.0
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
-        Reference     : https://azsec.azurewebsites.net/2020/01/03/delete-an-azure-sentinel-incident/
+        Reference     : https://azsec.azurewebsites.net/2020/01/27/get-all-comments-in-an-azure-sentinel-incident-programtically/
     .EXAMPLE
         .\Get-AzSentinelIncidentComments    -WorkspaceRg azsec-corporate-rg `
                                             -WorkspaceName azsec-shared-workspace `
@@ -19,15 +19,15 @@
 
 Param(
     [Parameter(Mandatory = $true,
-        HelpMessage = "Resource group name of the Log Analytics workspace Azure Sentinel connects to",
-        Position = 0)]
+               HelpMessage = "Resource group name of the Log Analytics workspace Azure Sentinel connects to",
+               Position = 0)]
     [ValidateNotNullOrEmpty()]
     [string]
     $WorkspaceRg,
 
     [Parameter(Mandatory = $true,
-        HelpMessage = "Name of the Log Analytics workspace Azure Sentinel connects to",
-        Position = 1)]
+               HelpMessage = "Name of the Log Analytics workspace Azure Sentinel connects to",
+               Position = 1)]
     [ValidateNotNullOrEmpty()]
     [string]
     $WorkspaceName,
