@@ -117,27 +117,6 @@ $uri = "https://management.azure.com" + $workspaceId + "/providers/Microsoft.Sec
 $response = Invoke-RestMethod -Uri $uri -Method GET -Headers $authHeader
 $icds = $response.value
 
-[Object]$IncidentUniqueId
-[Object]$IncidentTile
-[Object]$IncidentNumber
-[Object]$Description
-[Object]$Severity
-[Object]$Status
-[Object]$Label
-[Object]$Classification
-[Object]$ClassificationComment
-[Object]$AssignedTo
-[Object]$OwnerEmail
-[Object]$CreatedTimeUTC
-[Object]$FirstActivityTimeUTC
-[Object]$LastActivityTimeUTC
-[Object]$LastModifiedTimeUTC
-[Object]$FirstActivityTimeGenerated
-[Object]$LastActivityTimeGenerated
-[Object]$AlertProductName
-[Object]$CommentCount
-[Object]$AlertCount
-
 foreach ($icd in $icds) {
     $icdObj = [azSentinelIncidentCsv]::new()
     # Incident Unique ID is important if you want to get specific incident by ID
