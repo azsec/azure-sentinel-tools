@@ -111,7 +111,13 @@ function Get-AzureAccessToken {
 $authHeader = Get-AzureAccessToken
 $uri = "https://management.azure.com" + $workspaceId + "/providers/Microsoft.SecurityInsights/cases?api-version=2019-01-01-preview"
 $response = Invoke-RestMethod -Uri $uri -Method GET -Headers $authHeader
-$icds = $response.value
+
+while($response.nextLink)
+{
+    $nextLink = $response.nextLink
+    $response = (Invoke-RestMethod -Uri $nextLink -Method GET -Headers $authHeader)
+    $icds += $response.value
+}
 
 foreach ($icd in $icds) {
     $icdObj = [azSentinelIncidentCsv]::new()
