@@ -20,7 +20,7 @@
         This script is written with Azure PowerShell (Az) module.
 
         File Name     : Get-AzSentinelIncidentListV2.ps1
-        Version       : 1.0.0.1
+        Version       : 1.0.0.2
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
         Reference     : https://azsec.azurewebsites.net/2020/03/18/quick-look-at-new-azure-sentinel-incident-api/
@@ -115,6 +115,7 @@ function Get-AzureAccessToken {
 $authHeader = Get-AzureAccessToken
 $uri = "https://management.azure.com" + $workspaceId + "/providers/Microsoft.SecurityInsights/incidents?api-version=2019-01-01-preview"
 $response = Invoke-RestMethod -Uri $uri -Method GET -Headers $authHeader
+$icds = $response.value
 
 while($response.nextLink)
 {
