@@ -18,7 +18,7 @@
         This script is written with Azure PowerShell (Az) module.
 
         File Name     : Get-AzSentinelIncidentList.ps1
-        Version       : 1.0.0.0
+        Version       : 1.0.0.1
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
         Reference     : https://azsec.azurewebsites.net/2019/12/16/extract-all-azure-sentinel-incidents/
