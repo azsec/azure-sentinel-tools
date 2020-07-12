@@ -18,7 +18,7 @@
         This script is written with Azure PowerShell (Az) module.
 
         File Name     : Get-AzSentinelIncidentList.ps1
-        Version       : 1.0.0.0
+        Version       : 1.0.0.1
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
         Reference     : https://azsec.azurewebsites.net/2019/12/16/extract-all-azure-sentinel-incidents/
@@ -111,6 +111,8 @@ function Get-AzureAccessToken {
 $authHeader = Get-AzureAccessToken
 $uri = "https://management.azure.com" + $workspaceId + "/providers/Microsoft.SecurityInsights/cases?api-version=2019-01-01-preview"
 $response = Invoke-RestMethod -Uri $uri -Method GET -Headers $authHeader
+
+$icds = $response.value
 
 while($response.nextLink)
 {
