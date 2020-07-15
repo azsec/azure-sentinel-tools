@@ -133,7 +133,7 @@ foreach ($icd in $icds) {
     $icdObj.Description =  $icd.properties.description
     $icdObj.Severity = $icd.properties.severity
     $icdObj.Status = $icd.properties.status
-    $icdObj.Label = $icd.properties.labels
+    $icdObj.Label = $icd.properties.labels.labelName | Out-String
     $icdObj.Classification = $icd.properties.classification
     $icdObj.ClassificationComment = $icd.properties.classificationComment
     $icdObj.AssignedTo = $icd.properties.owner.assignedTo
