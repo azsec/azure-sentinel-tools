@@ -1,6 +1,6 @@
 <#
     .SYNOPSIS
-        This script is used to extract all Azure Sentinel incidents using a new Azure Sentinel Incident API.
+        This script is used to extract all Azure Sentinel incidents using a new Azure Sentinel Incident API 2020-01-01
     .DESCRIPTION
         The script is used to extract all Azure Sentinel incidents.The script extracts the following info:
             - Incident ID: this is very important because it shall be used when you need to get specific incident. Name can be similar but this ID is unique.
@@ -20,7 +20,7 @@
         This script is written with Azure PowerShell (Az) module.
 
         File Name     : Get-AzSentinelIncidentListV2.ps1
-        Version       : 1.0.0.2
+        Version       : 1.0.0.3
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
         Reference     : https://azsec.azurewebsites.net/2020/03/18/quick-look-at-new-azure-sentinel-incident-api/
@@ -113,7 +113,7 @@ function Get-AzureAccessToken {
 }
 
 $authHeader = Get-AzureAccessToken
-$uri = "https://management.azure.com" + $workspaceId + "/providers/Microsoft.SecurityInsights/incidents?api-version=2019-01-01-preview"
+$uri = "https://management.azure.com" + $workspaceId + "/providers/Microsoft.SecurityInsights/incidents/?api-version=2020-01-01"
 $response = Invoke-RestMethod -Uri $uri -Method GET -Headers $authHeader
 $icds = $response.value
 
