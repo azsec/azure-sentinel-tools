@@ -20,7 +20,7 @@
         This script is written with Azure PowerShell (Az) module.
 
         File Name     : Get-AzSentinelIncidentListV2.ps1
-        Version       : 1.0.0.3
+        Version       : 1.0.0.4
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
         Reference     : https://azsec.azurewebsites.net/2020/03/18/quick-look-at-new-azure-sentinel-incident-api/
@@ -92,7 +92,6 @@ class azSentinelIncidentCsv{
     [Object]$LastModifiedTimeUTC
     [Object]$FirstActivityTimeGenerated
     [Object]$LastActivityTimeGenerated
-    [Object]$RelatedAlertIds
     [Object]$AlertProductName
     [Object]$CommentCount
     [Object]$AlertCount
