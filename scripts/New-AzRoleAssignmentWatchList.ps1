@@ -111,8 +111,8 @@ foreach ($subscription in $subscriptions) {
 }
 
 $roleAssignmentContent = $roleAssignmentCsvReport | ConvertTo-Csv -NoTypeInformation `
-                              | Foreach-Object { $_ -replace "`"", "" } `
-                              | Out-String
+                                                  | Foreach-Object { $_ -replace "`"", "" } `
+                                                  | Out-String
 
 $watchListConfig = @{}
 $properties = @{
