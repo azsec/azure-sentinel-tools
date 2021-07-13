@@ -13,13 +13,21 @@
         Prerequisite  : Az 
     
     .EXAMPLE
-        New-AzRoleAssignmentWatchList.ps1 -WorkspaceRg azsec-corporate-rg `
+        New-AzRoleAssignmentWatchList.ps1 -TargetSubscriptionId 'XXXX-XX-XX'
+                                          -WorkspaceRg azsec-corporate-rg `
                                           -WorkspaceName azsec-shared-workspace `
                                           -WatchListAlias 'role_assignment' `
                                           -Path 'C:\Workspace'
 #>
 
 Param(
+    [Parameter(Mandatory = $true,
+        HelpMessage = "The ID of the subscription of the target Azure Sentinel",
+        Position = 0)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $TargetSubscriptionId,
+
     [Parameter(Mandatory = $true,
         HelpMessage = "Resource group name of the Log Analytics workspace Azure Sentinel connects to",
         Position = 0)]
@@ -42,8 +50,8 @@ Param(
     $WatchListAlias,
 
     [Parameter(Mandatory = $true,
-              HelpMessage = "Location where the audit report is stored",
-              Position = 3)]
+        HelpMessage = "Location where the audit report is stored",
+        Position = 3)]
     [ValidateNotNullOrEmpty()]
     [string]
     $Path
@@ -52,13 +60,21 @@ Param(
 $date = Get-Date -UFormat "%Y_%m_%d_%H%M%S"
 $filePath = "$Path\$($WatchListAlias)_$($date).csv"
 
-$workspaceId = (Get-AzOperationalInsightsWorkspace -Name $WorkspaceName `
-        -ResourceGroupName $WorkspaceRg).ResourceId
-if (!$workspaceId) {
-    Write-Host -ForegroundColor Red "[!] Workspace cannot be found. Please try again"
+
+$contenxt = Set-AzContext -SubscriptionId $TargetSubscriptionId
+if ($contenxt) {
+    Write-Host -ForegroundColor Green "[-] Logged into the target subscription succesfully"
+    $workspaceId = (Get-AzOperationalInsightsWorkspace -Name $WorkspaceName `
+                                                       -ResourceGroupName $WorkspaceRg).ResourceId
+    if (!$workspaceId) {
+        Write-Host -ForegroundColor Red "[!] Workspace cannot be found. Please try again"
+    }
+    else {
+        Write-Host -ForegroundColor Green "[-] Your Azure Sentinel is connected to workspace: $WorkspaceName"
+    }
 }
 else {
-    Write-Host -ForegroundColor Green "[-] Your Azure Sentinel is connected to workspace: $WorkspaceName"
+    throw "Target can't be found"
 }
 
 function Get-AzureAccessToken {
@@ -88,7 +104,7 @@ class roleAssignmentObj {
 }
 
 $roleAssignmentCsvReport = @()
-$subscriptions = Get-AzSubscription | Where-Object {$_.State -eq "Enabled" }
+$subscriptions = Get-AzSubscription | Where-Object { $_.State -eq "Enabled" }
 $roleAssignments = Get-AzRoleAssignment 
 foreach ($subscription in $subscriptions) {
     Set-AzContext -SubscriptionId $subscription.Id
@@ -111,26 +127,40 @@ foreach ($subscription in $subscriptions) {
 }
 
 $roleAssignmentContent = $roleAssignmentCsvReport | ConvertTo-Csv -NoTypeInformation `
-                                                  | Foreach-Object { $_ -replace "`"", "" } `
-                                                  | Out-String
+| Foreach-Object { $_ -replace "`"", "" } `
+| Out-String
 
 $watchListConfig = @{}
 $properties = @{
-    "displayName" = "$WatchListAlias";
-    "provider" = "Microsoft";
+    "displayName"         = "$WatchListAlias";
+    "provider"            = "Microsoft";
     "numberOfLinesToSkip" = "0";
-    "itemsSearchKey" = "RoleDefinitionName";
-    "rawContent" = "$roleAssignmentContent";
-    "contentType" = "text/csv";
-    "source" = "Local file";
+    "itemsSearchKey"      = "RoleDefinitionName";
+    "contentType"         = "text/csv";
+    "rawContent"          = "$roleAssignmentContent";
+    "source"              = "$path";
 }
-$watchListConfig.Add("properties",$properties)
+
+<# If you want to use file in your location computer use the following code:
+
+$path = "C:\Workspace\azsec_role_assignment_2021_07_12_213000.csv"
+$watchListConfig = @{}
+$properties = @{
+    "displayName"         = "$WatchListAlias";
+    "provider"            = "Microsoft";
+    "numberOfLinesToSkip" = "0";
+    "itemsSearchKey"      = "RoleDefinitionName";
+    "source"              = "$path";
+}
+#>
+
+$watchListConfig.Add("properties", $properties)
 $requestBody = $watchListConfig | ConvertTo-Json -Depth 10
 
 $authHeader = Get-AzureAccessToken
 $uri = "https://management.azure.com" + $workspaceId `
-                                      + "/providers/Microsoft.SecurityInsights/watchlists/" `
-                                      + "$($WatchListAlias)?api-version=2021-03-01-preview"
+    + "/providers/Microsoft.SecurityInsights/watchlists/" `
+    + "$($WatchListAlias)?api-version=2021-03-01-preview"
 
 $response = Invoke-RestMethod -Uri $uri -Method PUT -Headers $authHeader -Body $requestBody
 $response
