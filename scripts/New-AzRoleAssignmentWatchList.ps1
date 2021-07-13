@@ -22,36 +22,36 @@
 
 Param(
     [Parameter(Mandatory = $true,
-        HelpMessage = "The ID of the subscription of the target Azure Sentinel",
-        Position = 0)]
+               HelpMessage = "The ID of the subscription of the target Azure Sentinel",
+               Position = 0)]
     [ValidateNotNullOrEmpty()]
     [string]
     $TargetSubscriptionId,
 
     [Parameter(Mandatory = $true,
-        HelpMessage = "Resource group name of the Log Analytics workspace Azure Sentinel connects to",
-        Position = 0)]
+               HelpMessage = "Resource group name of the Log Analytics workspace Azure Sentinel connects to",
+               Position = 0)]
     [ValidateNotNullOrEmpty()]
     [string]
     $WorkspaceRg,
 
     [Parameter(Mandatory = $true,
-        HelpMessage = "Name of the Log Analytics workspace Azure Sentinel connects to",
-        Position = 1)]
+               HelpMessage = "Name of the Log Analytics workspace Azure Sentinel connects to",
+               Position = 1)]
     [ValidateNotNullOrEmpty()]
     [string]
     $WorkspaceName,
 
     [Parameter(Mandatory = $true,
-        HelpMessage = "The name of your Role Assignment Watchlist",
-        Position = 2)]
+               HelpMessage = "The name of your Role Assignment Watchlist",
+               Position = 2)]
     [ValidateNotNullOrEmpty()]
     [string]
     $WatchListAlias,
 
     [Parameter(Mandatory = $true,
-        HelpMessage = "Location where the audit report is stored",
-        Position = 3)]
+               HelpMessage = "Location where the audit report is stored",
+               Position = 3)]
     [ValidateNotNullOrEmpty()]
     [string]
     $Path
@@ -59,7 +59,6 @@ Param(
 
 $date = Get-Date -UFormat "%Y_%m_%d_%H%M%S"
 $filePath = "$Path\$($WatchListAlias)_$($date).csv"
-
 
 $contenxt = Set-AzContext -SubscriptionId $TargetSubscriptionId
 if ($contenxt) {
@@ -111,24 +110,24 @@ foreach ($subscription in $subscriptions) {
     Write-Host -ForegroundColor Green "[-] Start retrieving Role Assignment in subscription:" $subscription.Name
     $roleAssignments = Get-AzRoleAssignment 
     foreach ($roleAssignment in $roleAssignments) {
-        $roleAssignmentObj = [roleAssignmentObj]::new()
-        $roleAssignmentObj.SubscriptionId = $subscription.Id
-        $roleAssignmentObj.SubscriptionName = $subscription.Name
-        $roleAssignmentObj.RoleAssignmentId = $roleAssignment.RoleAssignmentId
-        $roleAssignmentObj.Scope = $roleAssignment.Scope
-        $roleAssignmentObj.RoleDefinitionName = $roleAssignment.RoleDefinitionName
-        $roleAssignmentObj.RoleDefinitionId = $roleAssignment.RoleDefinitionId
-        $roleAssignmentObj.ObjectId = $roleAssignment.ObjectId
-        $roleAssignmentObj.ObjectType = $roleAssignment.ObjectType
-        $roleAssignmentObj.DisplayName = $roleAssignment.DisplayName
-        $roleAssignmentObj.SignInName = $roleAssignment.SignInName
-        $roleAssignmentCsvReport += $roleAssignmentObj
+             $roleAssignmentObj = [roleAssignmentObj]::new()
+             $roleAssignmentObj.SubscriptionId = $subscription.Id
+             $roleAssignmentObj.SubscriptionName = $subscription.Name
+             $roleAssignmentObj.RoleAssignmentId = $roleAssignment.RoleAssignmentId
+             $roleAssignmentObj.Scope = $roleAssignment.Scope
+             $roleAssignmentObj.RoleDefinitionName = $roleAssignment.RoleDefinitionName
+             $roleAssignmentObj.RoleDefinitionId = $roleAssignment.RoleDefinitionId
+             $roleAssignmentObj.ObjectId = $roleAssignment.ObjectId
+             $roleAssignmentObj.ObjectType = $roleAssignment.ObjectType
+             $roleAssignmentObj.DisplayName = $roleAssignment.DisplayName
+             $roleAssignmentObj.SignInName = $roleAssignment.SignInName
+             $roleAssignmentCsvReport += $roleAssignmentObj
     }
 }
 
 $roleAssignmentContent = $roleAssignmentCsvReport | ConvertTo-Csv -NoTypeInformation `
-| Foreach-Object { $_ -replace "`"", "" } `
-| Out-String
+                                                  | Foreach-Object { $_ -replace "`"", "" } `
+                                                  | Out-String
 
 $watchListConfig = @{}
 $properties = @{
@@ -159,8 +158,8 @@ $requestBody = $watchListConfig | ConvertTo-Json -Depth 10
 
 $authHeader = Get-AzureAccessToken
 $uri = "https://management.azure.com" + $workspaceId `
-    + "/providers/Microsoft.SecurityInsights/watchlists/" `
-    + "$($WatchListAlias)?api-version=2021-03-01-preview"
+                                      + "/providers/Microsoft.SecurityInsights/watchlists/" `
+                                      + "$($WatchListAlias)?api-version=2021-03-01-preview"
 
 $response = Invoke-RestMethod -Uri $uri -Method PUT -Headers $authHeader -Body $requestBody
 $response
