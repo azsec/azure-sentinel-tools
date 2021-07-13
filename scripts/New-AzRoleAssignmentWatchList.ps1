@@ -137,7 +137,7 @@ $properties = @{
     "itemsSearchKey"      = "RoleDefinitionName";
     "contentType"         = "text/csv";
     "rawContent"          = "$roleAssignmentContent";
-    "source"              = "$path";
+    "source"              = "Local file";
 }
 
 <# If you want to use file in your location computer use the following code:
