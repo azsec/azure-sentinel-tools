@@ -60,8 +60,8 @@ Param(
 $date = Get-Date -UFormat "%Y_%m_%d_%H%M%S"
 $filePath = "$Path\$($WatchListAlias)_$($date).csv"
 
-$contenxt = Set-AzContext -SubscriptionId $TargetSubscriptionId
-if ($contenxt) {
+$context = Set-AzContext -SubscriptionId $TargetSubscriptionId
+if ($context) {
     Write-Host -ForegroundColor Green "[-] Logged into the target subscription succesfully"
     $workspaceId = (Get-AzOperationalInsightsWorkspace -Name $WorkspaceName `
                                                        -ResourceGroupName $WorkspaceRg).ResourceId
