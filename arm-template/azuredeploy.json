@@ -4,7 +4,7 @@
   "parameters": {
     "workspaceName": {
       "type": "string",
-      "defaultValue": "azure-monitoring-workspace",
+      "defaultValue": "azsec-shared-workspace",
       "metadata": {
         "description": "The name of the Log Analytics Workspace Azure Sentinel is connected to."
       }
