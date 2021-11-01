@@ -77,11 +77,11 @@
       "type": "string",
       "defaultValue": "/subscriptions/67d6179d-a99d-4ccd-8c56-4d3ff2e13349/resourceGroups/azsec-corporate-rg/providers/Microsoft.Logic/workflows/alert_notification"
     },
-    "automationRuleId": {
+    "actionRuleId": {
       "type": "string",
       "defaultValue": "15b9235d-46f0-49a6-910c-9d1d3a649899",
       "metadata": {
-        "description": "The name (GUID) of the Azure Sentinel custom analytics rule."
+        "description": "The action Rule Id"
       }
     }
   },
@@ -152,8 +152,8 @@
     {
       "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules/actions",
       "apiVersion": "2021-09-01-preview",
-      "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/',parameters('analyticsRuleId'),'/actions/',parameters('automationRuleId'))]",
-      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('analyticsRuleId'), '/',parameters('automationRuleId'))]",
+      "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/',parameters('analyticsRuleId'),'/actions/',parameters('actionRuleId'))]",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('analyticsRuleId'), '/',parameters('actionRuleId'))]",
       "properties": {
         "logicAppResourceId": "[parameters('logicAppResourceId')]",
         "TriggerUri": "[listCallbackURL(concat(parameters('logicAppResourceId')),'2016-06-01').value]"
