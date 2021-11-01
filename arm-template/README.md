@@ -1,0 +1,1 @@
+# Sample ARM template to create Azure Sentinel analytics rule

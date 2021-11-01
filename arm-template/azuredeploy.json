@@ -1,0 +1,99 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "type": "string",
+      "defaultValue": "azure-monitoring-workspace",
+      "metadata": {
+        "description": "The name of the Log Analytics Workspace Azure Sentinel is connected to."
+      }
+    },
+    "alertRuleName": {
+      "type": "string",
+      "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The name (GUID) of the Azure Sentinel custom analytics rule."
+      }
+    }
+  },
+  "variables": {
+    "alertRuleName": "[concat(parameters('workspaceName'), '/Microsoft.SecurityInsights/', parameters('alertRuleName'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
+      "name": "[variables('alertRuleName')]",
+      "kind": "Scheduled",
+      "apiVersion": "2021-09-01-preview",
+      "properties": {
+        "displayName": "AzSec - Monitor Azure Key Vault Operation",
+        "description": "AzSec - Monitor Azure Key Vault Operation",
+        "severity": "Medium",
+        "enabled": true,
+        "query": "let TargetKeyVaults = dynamic (\n  [\n    \"shared-corporate-kv\",\n    \"azsec-kv\"\n  ]\n);\nAzureDiagnostics\n| where ResourceProvider =~ \"MICROSOFT.KEYVAULT\"\n| where Resource in~ (TargetKeyVaults)\n| project TimeGenerated, OperationName, KeyVaultName = Resource, ResourceGroup, CallerIPAddress, _ResourceId",
+        "queryFrequency": "PT5H",
+        "queryPeriod": "PT5H",
+        "triggerOperator": "GreaterThan",
+        "triggerThreshold": 0,
+        "suppressionDuration": "PT5H",
+        "suppressionEnabled": false,
+        "tactics": [
+          "InitialAccess",
+          "PreAttack",
+          "Execution",
+          "Persistence",
+          "PrivilegeEscalation",
+          "DefenseEvasion",
+          "CredentialAccess",
+          "Discovery",
+          "LateralMovement",
+          "Collection",
+          "Exfiltration",
+          "CommandAndControl",
+          "Impact"
+        ],
+        "alertRuleTemplateName": null,
+        "incidentConfiguration": {
+          "createIncident": true,
+          "groupingConfiguration": {
+            "enabled": false,
+            "reopenClosedIncident": false,
+            "lookbackDuration": "PT5H",
+            "matchingMethod": "AllEntities",
+            "groupByEntities": [],
+            "groupByAlertDetails": [],
+            "groupByCustomDetails": []
+          }
+        },
+        "eventGroupingSettings": {
+          "aggregationKind": "SingleAlert"
+        },
+        "alertDetailsOverride": {
+          "alertDisplayNameFormat": "{{OperationName}} request to {{KeyVaultName} Key Vault",
+          "alertDescriptionFormat": "{{OperationName}} request to {{KeyVaultName} Key Vault at {{TimeGenerated}}",
+          "alertTacticsColumnName": null,
+          "alertSeverityColumnName": null
+        },
+        "customDetails": {
+          "TimeGenerated": "TimeGenerated",
+          "KeyVaultName": "KeyVaultName",
+          "ResourceGroup": "ResourceGroup",
+          "CallerIPAddress": "CallerIPAddress",
+          "OperationName": "OperationName"
+        },
+        "entityMappings": [
+          {
+            "entityType": "AzureResource",
+            "fieldMappings": [
+              {
+                "identifier": "ResourceId",
+                "columnName": "_ResourceId"
+              }
+            ]
+          }
+        ]
+      }
+    }
+  ]
+}
