@@ -9,16 +9,84 @@
         "description": "The name of the Log Analytics Workspace Azure Sentinel is connected to."
       }
     },
-    "alertRuleName": {
+    "analyticsRuleId": {
       "type": "string",
       "defaultValue": "[newGuid()]",
+      "metadata": {
+        "description": "The name (GUID) of the Azure Sentinel custom analytics rule."
+      }
+    },
+    "analyticsRuleDisplayName": {
+      "type": "string",
+      "metadata": {
+        "description": "The display name of the Azure Sentinel custom analytics rule."
+      }
+    },
+    "analyticsRuleDescription": {
+      "type": "string",
+      "metadata": {
+        "description": "The description of the Azure Sentinel custom analytics rule."
+      }
+    },
+    "analyticsRuleSeverity": {
+      "type": "string",
+      "allowedValues": [
+        "Informational",
+        "Low",
+        "Medium",
+        "High"
+      ],
+      "metadata": {
+        "description": "The severity of the Azure Sentinel custom analytics rule."
+      }
+    },
+    "analyticsRuleQuery": {
+      "type": "string",
+      "metadata": {
+        "description": "The query of the Azure Sentinel custom analytics rule."
+      }
+    },
+    "alertDisplayNameFormat": {
+      "type": "string",
+      "metadata": {
+        "description": "The display name format of the Azure Sentinel custom analytics rule. More information https://azsec.azurewebsites.net/2021/11/01/azure-sentinel-custom-alert-named-based-on-detected-resource/"
+      }
+    },
+    "analyticsRuleTactics": {
+      "type": "array",
+      "allowedValues": [
+        "InitialAccess",
+        "PreAttack",
+        "Execution",
+        "Persistence",
+        "PrivilegeEscalation",
+        "DefenseEvasion",
+        "CredentialAccess",
+        "Discovery",
+        "LateralMovement",
+        "Collection",
+        "Exfiltration",
+        "CommandAndControl",
+        "Impact"
+      ],
+      "metadata": {
+        "description": "The tactic of the Azure Sentinel custom analytics rule. "
+      }
+    },
+    "logicAppResourceId": {
+      "type": "string",
+      "defaultValue": "/subscriptions/67d6179d-a99d-4ccd-8c56-4d3ff2e13349/resourceGroups/azsec-corporate-rg/providers/Microsoft.Logic/workflows/alert_notification"
+    },
+    "automationRuleId": {
+      "type": "string",
+      "defaultValue": "15b9235d-46f0-49a6-910c-9d1d3a649899",
       "metadata": {
         "description": "The name (GUID) of the Azure Sentinel custom analytics rule."
       }
     }
   },
   "variables": {
-    "alertRuleName": "[concat(parameters('workspaceName'), '/Microsoft.SecurityInsights/', parameters('alertRuleName'))]"
+    "alertRuleName": "[concat(parameters('workspaceName'), '/Microsoft.SecurityInsights/', parameters('analyticsRuleId'))]"
   },
   "resources": [
     {
@@ -27,32 +95,18 @@
       "kind": "Scheduled",
       "apiVersion": "2021-09-01-preview",
       "properties": {
-        "displayName": "AzSec - Monitor Azure Key Vault Operation",
-        "description": "AzSec - Monitor Azure Key Vault Operation",
-        "severity": "Medium",
+        "displayName": "[parameters('analyticsRuleDisplayName')]",
+        "description": "[parameters('analyticsRuleDescription')]",
+        "severity": "[parameters('analyticsRuleSeverity')]",
         "enabled": true,
-        "query": "let TargetKeyVaults = dynamic (\n  [\n    \"shared-corporate-kv\",\n    \"azsec-kv\"\n  ]\n);\nAzureDiagnostics\n| where ResourceProvider =~ \"MICROSOFT.KEYVAULT\"\n| where Resource in~ (TargetKeyVaults)\n| project TimeGenerated, OperationName, KeyVaultName = Resource, ResourceGroup, CallerIPAddress, _ResourceId",
+        "query": "[parameters('analyticsRuleQuery')]",
         "queryFrequency": "PT5H",
         "queryPeriod": "PT5H",
         "triggerOperator": "GreaterThan",
         "triggerThreshold": 0,
         "suppressionDuration": "PT5H",
         "suppressionEnabled": false,
-        "tactics": [
-          "InitialAccess",
-          "PreAttack",
-          "Execution",
-          "Persistence",
-          "PrivilegeEscalation",
-          "DefenseEvasion",
-          "CredentialAccess",
-          "Discovery",
-          "LateralMovement",
-          "Collection",
-          "Exfiltration",
-          "CommandAndControl",
-          "Impact"
-        ],
+        "tactics": "[parameters('analyticsRuleTactics')]",
         "alertRuleTemplateName": null,
         "incidentConfiguration": {
           "createIncident": true,
@@ -70,8 +124,8 @@
           "aggregationKind": "SingleAlert"
         },
         "alertDetailsOverride": {
-          "alertDisplayNameFormat": "{{OperationName}} request to {{KeyVaultName} Key Vault",
-          "alertDescriptionFormat": "{{OperationName}} request to {{KeyVaultName} Key Vault at {{TimeGenerated}}",
+          "alertDisplayNameFormat": "[parameters('alertDisplayNameFormat')]",
+          "alertDescriptionFormat": "[parameters('alertDisplayNameFormat')]",
           "alertTacticsColumnName": null,
           "alertSeverityColumnName": null
         },
@@ -93,6 +147,16 @@
             ]
           }
         ]
+      }
+    },
+    {
+      "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules/actions",
+      "apiVersion": "2021-09-01-preview",
+      "id": "[concat(resourceId('Microsoft.OperationalInsights/workspaces/providers', parameters('workspaceName'), 'Microsoft.SecurityInsights'),'/alertRules/',parameters('analyticsRuleId'),'/actions/',parameters('automationRuleId'))]",
+      "name": "[concat(parameters('workspaceName'),'/Microsoft.SecurityInsights/', parameters('analyticsRuleId'), '/',parameters('automationRuleId'))]",
+      "properties": {
+        "logicAppResourceId": "[parameters('logicAppResourceId')]",
+        "TriggerUri": "[listCallbackURL(concat(parameters('logicAppResourceId')),'2016-06-01').value]"
       }
     }
   ]
