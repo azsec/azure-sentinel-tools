@@ -75,7 +75,9 @@
     },
     "logicAppResourceId": {
       "type": "string",
-      "defaultValue": "/subscriptions/67d6179d-a99d-4ccd-8c56-4d3ff2e13349/resourceGroups/azsec-corporate-rg/providers/Microsoft.Logic/workflows/alert_notification"
+      "metadata": {
+        "description": "The resource Id of the Logic App you want to connect to the analytics rule"
+      }
     },
     "actionRuleId": {
       "type": "string",

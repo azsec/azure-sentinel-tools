@@ -6,7 +6,7 @@
       "value": "azsec-shared-workspace"
     },
     "logicAppResourceId": {
-      "value": "/subscriptions/67d6179d-a99d-4ccd-8c56-4d3ff2e13349/resourceGroups/azsec-corporate-rg/providers/Microsoft.Logic/workflows/alert_notification"
+      "value": "/subscriptions/67d6179d-a99d-xxxx-xxxx-4d3ff2e13349/resourceGroups/azsec-corporate-rg/providers/Microsoft.Logic/workflows/alert_notification"
     },
     "analyticsRuleDisplayName": {
       "value": "AzSec - NRT Monitor Azure Key Vault Operation"
