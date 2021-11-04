@@ -1,0 +1,36 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "workspaceName": {
+      "value": "azsec-shared-workspace"
+    },
+    "logicAppResourceId": {
+      "value": "/subscriptions/67d6179d-a99d-4ccd-8c56-4d3ff2e13349/resourceGroups/azsec-corporate-rg/providers/Microsoft.Logic/workflows/alert_notification"
+    },
+    "analyticsRuleDisplayName": {
+      "value": "AzSec - NRT Monitor Azure Key Vault Operation"
+    },
+    "analyticsRuleDescription": {
+      "value": "AzSec - NRT Monitor Azure Key Vault Operation"
+    },
+    "analyticsRuleSeverity": {
+      "value": "Medium"
+    },
+    "analyticsRuleQuery": {
+      "value": "let TargetKeyVaults = dynamic (\n  [\n    \"shared-corporate-kv\",\n    \"azsec-kv\"\n  ]\n);\nAzureDiagnostics\n| where ResourceProvider =~ \"MICROSOFT.KEYVAULT\"\n| where Resource in~ (TargetKeyVaults)\n| project TimeGenerated, OperationName, KeyVaultName = Resource, ResourceGroup, CallerIPAddress, _ResourceId"
+    },
+    "alertDisplayNameFormat": {
+      "value": "{{OperationName}} request to {{KeyVaultName} Key Vault"
+    },
+    "analyticsRuleTactics": {
+      "value": [
+        "InitialAccess",
+        "CommandAndControl"
+      ]
+    },
+    "actionRuleId": {
+      "value": "15b9235d-46f0-49a6-910c-9d1d3a649899"
+    }
+  }
+}

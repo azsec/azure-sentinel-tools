@@ -92,7 +92,7 @@
     {
       "type": "Microsoft.OperationalInsights/workspaces/providers/alertRules",
       "name": "[variables('alertRuleName')]",
-      "kind": "Scheduled",
+      "kind": "NRT",
       "apiVersion": "2021-09-01-preview",
       "properties": {
         "displayName": "[parameters('analyticsRuleDisplayName')]",
@@ -100,10 +100,6 @@
         "severity": "[parameters('analyticsRuleSeverity')]",
         "enabled": true,
         "query": "[parameters('analyticsRuleQuery')]",
-        "queryFrequency": "PT5H",
-        "queryPeriod": "PT5H",
-        "triggerOperator": "GreaterThan",
-        "triggerThreshold": 0,
         "suppressionDuration": "PT5H",
         "suppressionEnabled": false,
         "tactics": "[parameters('analyticsRuleTactics')]",
@@ -133,8 +129,7 @@
           "TimeGenerated": "TimeGenerated",
           "KeyVaultName": "KeyVaultName",
           "ResourceGroup": "ResourceGroup",
-          "CallerIPAddress": "CallerIPAddress",
-          "OperationName": "OperationName"
+          "CallerIPAddress": "CallerIPAddress"
         },
         "entityMappings": [
           {
