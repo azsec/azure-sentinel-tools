@@ -11,6 +11,7 @@
         Version       : 1.0.0.0
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
+        Reference     : https://azsec.azurewebsites.net/2021/11/25/azure-sentinel-threat-intelligence-api/
     .PARAMETER WorkspaceRg
         The resource group name of the Log Analytics workspace Azure Sentinel connects to.
     .PARAMETER WorkspaceName
