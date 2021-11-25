@@ -62,4 +62,4 @@ $uri = "https://management.azure.com" + $workspaceId `
 $response = Invoke-RestMethod -Uri $uri `
                               -Method Get `
                               -Headers $authHeader
-$response
+$response | ConvertTo-Json -Depth 5
