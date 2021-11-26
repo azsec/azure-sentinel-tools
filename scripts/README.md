@@ -37,8 +37,3 @@ Collection of scripts to support Microsoft Sentinel Threat Intelligence Indicato
 | **Script**                                                                            | **Description**                                                                                                         |
 | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | [Connect-AzureSecurityCenter.ps1](/scripts/connector/Connect-AzureSecurityCenter.ps1) | This script allows you to connect multiple Azure Security Center from multiple subscriptions to a single Azure Sentinel |
-
-| **Script**                                                                                                                                         | **Usage**                                                                         |
-| -------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
-| [Set-AzSentinelIncident.ps1](https://github.com/azsec/azure-sentinel-tools/blob/master/scripts/Set-AzSentinelIncident.ps1)                         | This script allows you to update an existing Azure Sentinel incident              |
-| [Update-MultipleAzSentinelIncidents.ps1](https://github.com/azsec/azure-sentinel-tools/blob/master/scripts/Update-MultipleAzSentinelIncidents.ps1) | This script allows you to update multiple Azure Sentinel incidents once at a time |
