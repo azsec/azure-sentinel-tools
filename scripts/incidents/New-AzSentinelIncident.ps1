@@ -11,6 +11,9 @@
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
         Reference     : https://azsec.azurewebsites.net/2020/01/06/create-a-fully-customized-azure-sentinel-incident/
+        
+        [11/26/2021] Updated script to use latest stable API. Supported custom parameters.
+        
     .EXAMPLE
         .\New-AzSentinelIncident.ps1 -WorkspaceRg azsec-corporate-rg `
                                      -WorkspaceName azsec-shared-workspace `
