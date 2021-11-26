@@ -173,7 +173,7 @@ Param(
 $workspaceId = (Get-AzOperationalInsightsWorkspace -Name $WorkspaceName `
                                                    -ResourceGroupName $WorkspaceRg).ResourceId
 if (!$workspaceId) {
-    Write-Host -ForegroundColor Red "[!] Workspace cannot be found. Please try again"
+    throw  "[!] Workspace cannot be found. Please try again"
 }
 else {
     Write-Host -ForegroundColor Green "[-] Your Azure Sentinel is connected to workspace: $WorkspaceName"
