@@ -44,7 +44,7 @@ Param(
 $workspaceId = (Get-AzOperationalInsightsWorkspace -Name $WorkspaceName `
                                                    -ResourceGroupName $WorkspaceRg).ResourceId
 if (!$workspaceId) {
-    Write-Host -ForegroundColor Red "[!] Workspace cannot be found. Please try again"
+    throw "[!] Workspace cannot be found. Please try again"
 }
 else {
     Write-Host -ForegroundColor Green "[-] Your Azure Sentinel is connected to workspace: $WorkspaceName"
@@ -62,17 +62,11 @@ function Get-SubscriptionList {
     return $list
 }
 
-function Get-AzureAccessToken {
-    $context = Get-AzContext
-    $profile = [Microsoft.Azure.Commands.Common.Authentication.Abstractions.AzureRmProfileProvider]::Instance.Profile
-    $profileClient = New-Object -TypeName Microsoft.Azure.Commands.ResourceManager.Common.RMProfileClient -ArgumentList ($profile)
-    $token = $profileClient.AcquireAccessToken($context.Subscription.TenantId)
-    $authHeader = @{
-        'Content-Type'  = 'application/json'
-        'Authorization' = 'Bearer ' + $token.AccessToken
-    }
-
-    return $authHeader
+# Get Azure Access Token for https://management.azure.com endpoint
+$accessToken = Get-AzAccessToken -ResourceTypeName "ResourceManager"
+$authHeader = @{
+    'Content-Type'  = 'application/json'
+    'Authorization' = 'Bearer ' + $accessToken.Token
 }
 
 function Test-AzureSecurityCenterTier {
@@ -121,7 +115,6 @@ function New-ConnectorConfiguration {
 $subscriptionsIds = Get-SubscriptionList -SubscriptionList $SubscriptionList
 foreach ($subscriptionId in $subscriptionsIds) {
     $status = Test-AzureSecurityCenterTier -SubscriptionId $subscriptionId
-    $authHeader = Get-AzureAccessToken
     $connectorName = $subscriptionId
     if ($status -eq $true) {
         Write-Host -ForegroundColor Green "[-] Connecting ASC to Azure Sentinel is going to be started"
