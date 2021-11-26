@@ -9,10 +9,13 @@
         This script is written with Azure PowerShell (Az) module.
 
         File Name     : Delete-AzureSentinelIncident.ps1
-        Version       : 1.0.0.0
+        Version       : 1.1.0.0
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
         Reference     : https://azsec.azurewebsites.net/2020/01/03/delete-an-azure-sentinel-incident/
+
+    
+        [11/26/2021] Updated script to use latest stable API
     .EXAMPLE
         .\Delete-AzureSentinelIncident.ps1  -WorkspaceRg azsec-corporate-rg `
                                             -WorkspaceName azsec-shared-workspace `
@@ -45,25 +48,21 @@ Param(
 $workspaceId = (Get-AzOperationalInsightsWorkspace -Name $WorkspaceName `
                                                    -ResourceGroupName $WorkspaceRg).ResourceId
 if (!$workspaceId) {
-    Write-Host -ForegroundColor Red "[!] Workspace cannot be found. Please try again"
+    throw "[!] Workspace cannot be found. Please try again"
 }
 else {
     Write-Host -ForegroundColor Green "[-] Your Azure Sentinel is connected to workspace: $WorkspaceName"
 }
 
-function Get-AzureAccessToken {
-    $context = Get-AzContext
-    $profile = [Microsoft.Azure.Commands.Common.Authentication.Abstractions.AzureRmProfileProvider]::Instance.Profile
-    $profileClient = New-Object -TypeName Microsoft.Azure.Commands.ResourceManager.Common.RMProfileClient -ArgumentList ($profile)
-    $token = $profileClient.AcquireAccessToken($context.Subscription.TenantId)
-    $authHeader = @{
-        'Content-Type'  = 'application/json'
-        'Authorization' = 'Bearer ' + $token.AccessToken
-    }
-
-    return $authHeader
+$accessToken = Get-AzAccessToken -ResourceTypeName "ResourceManager"
+$authHeader = @{
+    'Content-Type'  = 'application/json'
+    'Authorization' = 'Bearer ' + $accessToken.Token
 }
 
-$authHeader = Get-AzureAccessToken
-$uri = "https://management.azure.com" + $workspaceId + "/providers/Microsoft.SecurityInsights/cases/" + $IncidentId + "/?api-version=2019-01-01-preview"
+$uri = "https://management.azure.com" + $workspaceId `
+                                      + "/providers/Microsoft.SecurityInsights/incidents/" `
+                                      + $IncidentId `
+                                      + "/?api-version=2021-04-01"
+
 Invoke-RestMethod -Uri $uri -Method DELETE -Headers $authHeader
