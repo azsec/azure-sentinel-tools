@@ -11,6 +11,16 @@
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
         Reference     : https://azsec.azurewebsites.net/2019/12/14/connect-azure-security-center-to-azure-sentinel-programatically/
+    .PARAMETER WorkspaceRg
+        The resource group name of the Log Analytics workspace Azure Sentinel connects to
+    .PARAMETER WorkspaceName
+        The name of the Log Analytics workspace Azure Sentinel connects to
+    .PARAMETER SubscriptionList
+        Location path of the subscription list file containing a list of subscriptions.
+        Sample format:
+        2dd8cb59-ed12-XXXX-a2bc-356c212fbafc
+        e90d1736-d456-XXXX-a53b-b4790eef8a35
+
     .EXAMPLE
         .\Connect-AzureSecurityCenter.ps1 -WorkspaceRg azsec-corporate-rg `
                                           -WorkspaceName azsec-shared-workspace `
@@ -19,22 +29,22 @@
 
 Param(
     [Parameter(Mandatory = $true,
-        HelpMessage = "Resource group name of the Log Analytics workspace Azure Sentinel connects to",
-        Position = 0)]
+               HelpMessage = "Resource group name of the Log Analytics workspace Azure Sentinel connects to",
+               Position = 0)]
     [ValidateNotNullOrEmpty()]
     [string]
     $WorkspaceRg,
 
     [Parameter(Mandatory = $true,
-        HelpMessage = "Name of the Log Analytics workspace Azure Sentinel connects to",
-        Position = 1)]
+               HelpMessage = "Name of the Log Analytics workspace Azure Sentinel connects to",
+               Position = 1)]
     [ValidateNotNullOrEmpty()]
     [string]
     $WorkspaceName,
 
     [Parameter(Mandatory = $true,
-        HelpMessage = "Location path of the subscription list",
-        Position = 2)]
+               HelpMessage = "Location path of the subscription list",
+               Position = 2)]
     [ValidateNotNullOrEmpty()]
     [string]
     $SubscriptionList
@@ -119,8 +129,11 @@ foreach ($subscriptionId in $subscriptionsIds) {
     if ($status -eq $true) {
         Write-Host -ForegroundColor Green "[-] Connecting ASC to Azure Sentinel is going to be started"
         $requestBody = New-ConnectorConfiguration -SubscriptionId $subscriptionId | ConvertTo-Json -Depth 4
-        $uri = "https://management.azure.com" + $workspaceId + "/providers/Microsoft.SecurityInsights/dataConnectors/" + $connectorName + "?api-version=2019-01-01-preview"
-        $response = Invoke-WebRequest -Uri $uri -Method Put -Headers $authHeader -Body $requestBody
+        $uri = "https://management.azure.com" + $workspaceId `
+                                              + "/providers/Microsoft.SecurityInsights/dataConnectors/" `
+                                              + $connectorName `
+                                              + "?api-version=2020-01-01"
+        $response = Invoke-WebRequest -Uri $uri -Method Put -Headers $authHeader -Body $requestBody -UseBasicParsing
         if ($response.StatusCode -eq "200") {
             Write-Host -ForegroundColor Yellow "[-] Succesfully connected ASC in subscription: $subscriptionId to Azure Sentinel"
         }
