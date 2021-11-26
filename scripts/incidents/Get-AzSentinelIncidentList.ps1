@@ -16,7 +16,7 @@
             - Total comment: it is the total number of comments in each incident.
     .NOTES
         This script is written with Azure PowerShell (Az) module.
-        Use V2 for stable API
+        Use V2 for stable API here https://github.com/azsec/azure-sentinel-tools/blob/master/scripts/incidents/Get-AzSentinelIncidentListV2.ps1
 
         File Name     : Get-AzSentinelIncidentList.ps1
         Version       : 1.0.0.1
