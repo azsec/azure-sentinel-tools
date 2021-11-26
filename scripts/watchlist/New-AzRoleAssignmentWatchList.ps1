@@ -8,9 +8,11 @@
         This script is written with Azure PowerShell Az module.
 
         File Name     : New-AzRoleAssignmentWatchList.ps1
-        Version       : 1.0.0.0
+        Version       : 1.1.0.0
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az 
+
+        [11/26/2021] Updated script to use latest stable API.
     
     .EXAMPLE
         New-AzRoleAssignmentWatchList.ps1 -TargetSubscriptionId 'XXXX-XX-XX'
@@ -30,28 +32,28 @@ Param(
 
     [Parameter(Mandatory = $true,
                HelpMessage = "Resource group name of the Log Analytics workspace Azure Sentinel connects to",
-               Position = 0)]
+               Position = 1)]
     [ValidateNotNullOrEmpty()]
     [string]
     $WorkspaceRg,
 
     [Parameter(Mandatory = $true,
                HelpMessage = "Name of the Log Analytics workspace Azure Sentinel connects to",
-               Position = 1)]
+               Position = 2)]
     [ValidateNotNullOrEmpty()]
     [string]
     $WorkspaceName,
 
     [Parameter(Mandatory = $true,
                HelpMessage = "The name of your Role Assignment Watchlist",
-               Position = 2)]
+               Position = 3)]
     [ValidateNotNullOrEmpty()]
     [string]
     $WatchListAlias,
 
     [Parameter(Mandatory = $true,
                HelpMessage = "Location where the audit report is stored",
-               Position = 3)]
+               Position = 4)]
     [ValidateNotNullOrEmpty()]
     [string]
     $Path
@@ -66,7 +68,7 @@ if ($context) {
     $workspaceId = (Get-AzOperationalInsightsWorkspace -Name $WorkspaceName `
                                                        -ResourceGroupName $WorkspaceRg).ResourceId
     if (!$workspaceId) {
-        Write-Host -ForegroundColor Red "[!] Workspace cannot be found. Please try again"
+        throw "[!] Workspace cannot be found. Please try again"
     }
     else {
         Write-Host -ForegroundColor Green "[-] Your Azure Sentinel is connected to workspace: $WorkspaceName"
@@ -76,17 +78,11 @@ else {
     throw "Target can't be found"
 }
 
-function Get-AzureAccessToken {
-    $context = Get-AzContext
-    $authProfile = [Microsoft.Azure.Commands.Common.Authentication.Abstractions.AzureRmProfileProvider]::Instance.Profile
-    $profileClient = New-Object -TypeName Microsoft.Azure.Commands.ResourceManager.Common.RMProfileClient -ArgumentList ($authProfile)
-    $token = $profileClient.AcquireAccessToken($context.Subscription.TenantId)
-    $authHeader = @{
-        'Content-Type'  = 'application/json'
-        'Authorization' = 'Bearer ' + $token.AccessToken
-    }
-
-    return $authHeader
+# Get Azure Access Token for https://management.azure.com endpoint
+$accessToken = Get-AzAccessToken -ResourceTypeName "ResourceManager"
+$authHeader = @{
+    'Content-Type'  = 'application/json'
+    'Authorization' = 'Bearer ' + $accessToken.Token
 }
 
 class roleAssignmentObj {
@@ -156,10 +152,10 @@ $properties = @{
 $watchListConfig.Add("properties", $properties)
 $requestBody = $watchListConfig | ConvertTo-Json -Depth 10
 
-$authHeader = Get-AzureAccessToken
 $uri = "https://management.azure.com" + $workspaceId `
                                       + "/providers/Microsoft.SecurityInsights/watchlists/" `
-                                      + "$($WatchListAlias)?api-version=2021-03-01-preview"
+                                      + "$($WatchListAlias)" `
+                                      + "?api-version=2021-04-01"
 
 $response = Invoke-RestMethod -Uri $uri -Method PUT -Headers $authHeader -Body $requestBody
 $response
