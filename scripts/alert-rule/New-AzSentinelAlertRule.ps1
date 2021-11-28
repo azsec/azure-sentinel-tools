@@ -80,7 +80,7 @@
                                       -TriggerThreshold "0" `
                                       -EntityMappings '[{"entityType":"AzureResource","fieldMappings":["ResourceId","_ResourceId"]},{"entityType":"IP","fieldMappings":["Address","CallerIPAddress"]}]' `
                                       -CustomDetails @{OperationName = "OperationName"; KeyVaultName = "KeyVaultName"} `
-                                      -AlertDisplayNameFormat "{{OperationName}} from {{CallerIPAddress}} on {KeyVaultName}} Key Vault" `
+                                      -AlertDisplayNameFormat "{{OperationName}} from {{CallerIPAddress}} on {{KeyVaultName}} Key Vault" `
                                       -IncidentCreation "True" `
                                       -GroupIncidentEnabled "True" `
                                       -ReopenClosedIncident "True" `
@@ -379,7 +379,7 @@ $alert = [ordered]@{
     "displayName": "AzSecAAA - Monitor Az Key Vault Operation",
     "queryFrequency": "PT5H",
     "alertDetailsOverride": {
-      "alertDescriptionFormat": "{{OperationName}} from {{CallerIPAddress}} on {KeyVaultName}} Key Vault",
+      "alertDescriptionFormat": "{{OperationName}} from {{CallerIPAddress}} on {{KeyVaultName}} Key Vault",
       "alertDisplayNameFormat": "{{OperationName}} from {{CallerIPAddress}} on {KeyVaultName}} Key Vault"
     },
     "description": "This is the sample rule to monitor KV",
