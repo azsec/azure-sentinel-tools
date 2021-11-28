@@ -6,11 +6,12 @@
     .NOTES
         This script is written with Azure PowerShell (Az) module.
 
-        File Name     : Get-AzSentinelIncidentComments.ps1
+        File Name     : New-AzSentinelAlertRule.ps1
         Version       : 1.0.0.0
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
         API Version   : 2021-03-01-preview
+        Reference     : https://azsec.azurewebsites.net/2021/11/28/create-an-alert-with-custom-entity-mapping-using-microsoft-sentinel-rest-api/
 
     .PARAMETER WorkspaceRg
         The resource group name of the Log Analytics workspace Azure Sentinel connects to
