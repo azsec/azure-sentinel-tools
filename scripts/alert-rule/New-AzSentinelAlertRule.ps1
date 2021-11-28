@@ -1,8 +1,8 @@
 <#
     .SYNOPSIS
-        This script is used to create an scheduled analytics rule in Microsoft Sentinel.
+        This script is used to create a scheduled analytics rule in Microsoft Sentinel.
     .DESCRIPTION
-        This script is used to create an scheduled analytics rule with custom entity mapping and incident grouping configuration in Microsoft Sentinel.
+        This script is used to create a scheduled analytics rule with custom entity mapping and incident grouping configuration in Microsoft Sentinel.
     .NOTES
         This script is written with Azure PowerShell (Az) module.
 
