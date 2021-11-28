@@ -1,5 +1,13 @@
 # Collection of scripts to support Azure Sentinel operation.
 
+## Alert 
+
+Collection of scripts to support Microsoft Sentinel Alert operation
+| **Script**                                                                             | **Description**                                                                                                                                                |
+| -------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [New-AzSentinelAlertRule.ps1](/scripts/alert-rule/New-AzSentinelAlertRule.ps1)         | This script allows you to create a scheduled analytics rule including custom entity mapping, custom details, alert format and incident grouping configuration. |
+| [Get-AzSentinelAlertRuleById.ps1](/scripts/alert-rule/Get-AzSentinelAlertRuleById.ps1) | This script is used to get a full Microsoft Sentinel Alert rule including custom entities and incident grouping configuration.                                 |
+
 ## Incident 
 
 Collection of scripts to support Microsoft Sentinel Incident operation
@@ -33,7 +41,15 @@ Collection of scripts to support Microsoft Sentinel Threat Intelligence Indicato
 
 
 ## Connector
+
 Collection of scripts to support Microsoft Sentinel Threat Intelligence Indicator operation
 | **Script**                                                                            | **Description**                                                                                                         |
 | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | [Connect-AzureSecurityCenter.ps1](/scripts/connector/Connect-AzureSecurityCenter.ps1) | This script allows you to connect multiple Azure Security Center from multiple subscriptions to a single Azure Sentinel |
+
+## Migration
+
+Collection of scripts to support Microsoft Sentinel migration
+| **Script**                                                                        | **Description**                                                                                |
+| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| [Move-AzSentinelAlertRules.ps1](/scripts/migration/Move-AzSentinelAlertRules.ps1) | This script is used to migrate alert rules to another Azure Sentinel in the same Azure tenant. |

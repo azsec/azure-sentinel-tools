@@ -11,6 +11,7 @@
         Version       : 1.1.0.0
         Author        : AzSec (https://azsec.azurewebsites.net/)
         Prerequisite  : Az
+        Reference     : https://azsec.azurewebsites.net/2021/11/27/migrate-alert-rules-to-another-azure-sentinel-in-the-same-tenant/
 
     This script uses API version 2020-01-01 which doesn't support getting full alert rule object. 
     There are several unsupported fields from this API version such as custom details, entity mappings and new incident grouping configuration.
