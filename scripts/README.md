@@ -53,3 +53,10 @@ Collection of scripts to support Microsoft Sentinel migration
 | **Script**                                                                        | **Description**                                                                                |
 | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
 | [Move-AzSentinelAlertRules.ps1](/scripts/migration/Move-AzSentinelAlertRules.ps1) | This script is used to migrate alert rules to another Azure Sentinel in the same Azure tenant. |
+
+## Utils
+
+Collection of utility scripts to support Microsoft Sentinel API
+| **Script**                                                            | **Description**                                         |
+| --------------------------------------------------------------------- | ------------------------------------------------------- |
+| [Test-AzSentinelGetApi.ps1](/scripts/utils/Test-AzSentinelGetApi.ps1) | This script is used to test Microsoft Sentinel GET API. |
