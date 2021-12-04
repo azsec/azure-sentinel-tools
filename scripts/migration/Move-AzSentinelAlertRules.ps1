@@ -13,6 +13,9 @@
         Prerequisite  : Az
         Reference     : https://azsec.azurewebsites.net/2021/11/27/migrate-alert-rules-to-another-azure-sentinel-in-the-same-tenant/
 
+    [12/04/2021] Use this script to migrate an alert rule with custom entity mapping, custom details and incident grouping configuration
+    (https://github.com/azsec/azure-sentinel-tools/blob/master/scripts/migration/Move-AzSentinelAlertRulesV2.ps1)
+    
     This script uses API version 2020-01-01 which doesn't support getting full alert rule object. 
     There are several unsupported fields from this API version such as custom details, entity mappings and new incident grouping configuration.
     Use this script to quickly copy alert rule to another Sentinel to test. You will need to manually update incident grouping configuration and custom mapping.

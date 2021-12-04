@@ -50,9 +50,10 @@ Collection of scripts to support Microsoft Sentinel Threat Intelligence Indicato
 ## Migration
 
 Collection of scripts to support Microsoft Sentinel migration
-| **Script**                                                                        | **Description**                                                                                |
-| --------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
-| [Move-AzSentinelAlertRules.ps1](/scripts/migration/Move-AzSentinelAlertRules.ps1) | This script is used to migrate alert rules to another Azure Sentinel in the same Azure tenant. |
+| **Script**                                                                            | **Description**                                                                                                                                                       |
+| ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [Move-AzSentinelAlertRules.ps1](/scripts/migration/Move-AzSentinelAlertRules.ps1)     | This script is used to migrate alert rules to another Azure Sentinel in the same Azure tenant.                                                                        |
+| [Move-AzSentinelAlertRulesV2.ps1](/scripts/migration/Move-AzSentinelAlertRulesV2.ps1) | This script is used to migrate alert rules with custom entity mapping, details or incident grouping configuration to another Azure Sentinel in the same Azure tenant. |
 
 ## Utils
 
