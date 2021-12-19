@@ -21,32 +21,29 @@
                             -IoCSource "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Sample%20Data/Feeds/Log4j_IOC_List.csv"
 #>
 
-# Param(
-#     [Parameter(Mandatory = $false,
-#                HelpMessage = "Resource group name of the Log Analytics workspace Azure Sentinel connects to",
-#                Position = 0)]
-#     [ValidateNotNullOrEmpty()]
-#     [string]
-#     $WorkspaceRg,
+Param(
+    [Parameter(Mandatory = $false,
+               HelpMessage = "Resource group name of the Log Analytics workspace Azure Sentinel connects to",
+               Position = 0)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $WorkspaceRg,
 
-#     [Parameter(Mandatory = $false,
-#                HelpMessage = "Name of the Log Analytics workspace Azure Sentinel connects to",
-#                Position = 1)]
-#     [ValidateNotNullOrEmpty()]
-#     [string]
-#     $WorkspaceName,
+    [Parameter(Mandatory = $false,
+               HelpMessage = "Name of the Log Analytics workspace Azure Sentinel connects to",
+               Position = 1)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $WorkspaceName,
 
-#     [Parameter(Mandatory = $false,
-#                HelpMessage = "Name (GUID) of the Indicator",
-#                Position = 1)]
-#     [ValidateNotNullOrEmpty()]
-#     [string]
-#     $IoCSource
-# )
+    [Parameter(Mandatory = $false,
+               HelpMessage = "Name (GUID) of the Indicator",
+               Position = 1)]
+    [ValidateNotNullOrEmpty()]
+    [string]
+    $IoCSource
+)
 
-$WorkspaceRg = "azsec-corporate-rg"
-$WorkspaceName = "azsec-shared-workspace"
-$IoCSource = "https://raw.githubusercontent.com/Azure/Azure-Sentinel/master/Sample%20Data/Feeds/Log4j_IOC_List.csv"
 $date = Get-Date -UFormat "%Y_%m_%d_%H%M%S"
 $fileName = "Log4j_IOC_List_$($date).csv"
 $output = "$PSScriptRoot\$fileName"
