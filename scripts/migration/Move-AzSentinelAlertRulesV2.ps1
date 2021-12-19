@@ -92,6 +92,7 @@ $alertRules = Get-ScheduledAnalyticsRule | Where-Object {$_.kind -eq "Scheduled"
 
 # Switch to destination subscription if not the same
 if ($dstSubscriptionId -ne $srcSubscriptionId) {
+    Write-Host -ForegroundColor Green "[-] Set destined subscription context before retrieving alert rules...."
     Set-AzContext -SubscriptionId $dstSubscriptionId
 }
 
@@ -102,61 +103,66 @@ $authHeader = @{
     'Content-Type'  = 'application/json'
     'Authorization' = 'Bearer ' + $accessToken.Token
 }
+if ($dstWorkspace) {
+    Write-Host -ForegroundColor Green "[-] Found the destined workspace named: " $dstWorkspace.Name
+    foreach ($alertRule in $alertRules) {
 
-foreach ($alertRule in $alertRules) {
+        # Convert to the right data type to avoid conversion
+        [string]$ruleDisplayName = $alertRule.properties.displayName
+        [int]$triggerThreshold = $alertRule.properties.triggerThreshold
+        [bool]$suppressionEnabled = $alertRule.properties.suppressionEnabled
+        [string]$query = $alertRule.properties.query
 
-    # Convert to the right data type to avoid conversion
-    [string]$ruleDisplayName = $alertRule.properties.displayName
-    [int]$triggerThreshold = $alertRule.properties.triggerThreshold
-    [bool]$suppressionEnabled = $alertRule.properties.suppressionEnabled
-    [string]$query = $alertRule.properties.query
+        Write-Host -ForegroundColor Green "Found a rule named: $ruleDisplayName"
 
-    Write-Host -ForegroundColor Green "Found a rule named: $ruleDisplayName"
+        $alertRuleId = (New-Guid).Guid
+        # Create an alert rule object
+        $alert = [ordered]@{
+            ruleId     = $alertRuleId
+            kind       = "Scheduled"
+            properties = @{
+                displayName           = $ruleDisplayName
+                enabled               = $alertRule.properties.enabled
+                description           = $alertRule.properties.description
+                tactics               = $alertRule.properties.tactics
+                suppressionEnabled    = $suppressionEnabled
+                suppressionDuration   = $alertRule.properties.suppressionDuration
+                query                 = $query
+                severity              = $alertRule.properties.severity
+                queryFrequency        = $alertRule.properties.queryFrequency
+                queryPeriod           = $alertRule.properties.queryPeriod
+                triggerOperator       = $alertRule.properties.triggerOperator
+                triggerThreshold      = $triggerThreshold
+                entityMappings        = $alertRule.properties.entityMappings
+                customDetails         = $alertRule.properties.customDetails
+                alertDetailsOverride  = $alertRule.properties.alertDetailsOverride
+                incidentConfiguration = $alertRule.properties.incidentConfiguration
+            }
+        }    
 
-    $alertRuleId = (New-Guid).Guid
-    # Create an alert rule object
-    $alert = [ordered]@{
-        ruleId     = $alertRuleId
-        kind       = "Scheduled"
-        properties = @{
-            displayName           = $ruleDisplayName
-            enabled               = $alertRule.properties.enabled
-            description           = $alertRule.properties.description
-            tactics               = $alertRule.properties.tactics
-            suppressionEnabled    = $suppressionEnabled
-            suppressionDuration   = $alertRule.properties.suppressionDuration
-            query                 = $query
-            severity              = $alertRule.properties.severity
-            queryFrequency        = $alertRule.properties.queryFrequency
-            queryPeriod           = $alertRule.properties.queryPeriod
-            triggerOperator       = $alertRule.properties.triggerOperator
-            triggerThreshold      = $triggerThreshold
-            entityMappings        = $alertRule.properties.entityMappings
-            customDetails         = $alertRule.properties.customDetails
-            alertDetailsOverride  = $alertRule.properties.alertDetailsOverride
-            incidentConfiguration = $alertRule.properties.incidentConfiguration
-        }
-    }    
+        $requestBody = $alert | ConvertTo-Json -Depth 5
 
-    $requestBody = $alert | ConvertTo-Json -Depth 5
+        Write-Host -ForegroundColor Yellow "`t[-] Start migrating rules named: $ruleDisplayName"  
 
-    Write-Host -ForegroundColor Yellow "`t[-] Start migrating rules named: $ruleDisplayName"  
+        $uri = "https://management.azure.com" + $($dstWorkspace.ResourceId) `
+                                            + "/providers/Microsoft.SecurityInsights/alertRules/" `
+                                            + $alertRuleId `
+                                            + "?api-version=2021-03-01-preview"
 
-    $uri = "https://management.azure.com" + $($dstWorkspace.ResourceId) `
-                                          + "/providers/Microsoft.SecurityInsights/alertRules/" `
-                                          + $alertRuleId `
-                                          + "?api-version=2021-03-01-preview"
+        try {
+            $response = Invoke-RestMethod -Uri $uri `
+                                        -Method PUT `
+                                        -Headers $authHeader `
+                                        -Body $requestBody 
+            Write-Host -ForegroundColor Green "`t[-] Succesfully migrated rule named: $ruleDisplayName"
 
-    try {
-        $response = Invoke-RestMethod -Uri $uri `
-                                      -Method PUT `
-                                      -Headers $authHeader `
-                                      -Body $requestBody 
-        Write-Host -ForegroundColor Green "`t[-] Succesfully migrated rule named: $ruleDisplayName"
-
-    } catch {
-        Write-Host -ForegroundColor Red "`t[!] StatusCode:" $_.Exception.Response.StatusCode.value__ 
-        Write-Host -ForegroundColor Red "`t[!] StatusDescription:" $_.Exception.Response.StatusDescription
-        Write-Host -ForegroundColor Red "`t[!] Failed to migrate rule named: $ruleDisplayName"
-    }                                 
+        } catch {
+            Write-Host -ForegroundColor Red "`t[!] StatusCode:" $_.Exception.Response.StatusCode.value__ 
+            Write-Host -ForegroundColor Red "`t[!] StatusDescription:" $_.Exception.Response.StatusDescription
+            Write-Host -ForegroundColor Red "`t[!] Failed to migrate rule named: $ruleDisplayName"
+        }                                 
+    }
+}
+else {
+    throw "[!] Destination Workspace could not be found. Please try again!"
 }
